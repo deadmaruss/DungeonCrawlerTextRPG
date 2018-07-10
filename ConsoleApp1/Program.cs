@@ -9,13 +9,13 @@ namespace DungeonCrawler
 {
     class Program
     {
-		public static int MillisecondsTimeout = 2000;
+        public static int MillisecondsTimeout = 2000;
 
         public static int PlayerHealth = 100;
         public static int PlayerAttack = 5;
         public static int PlayerSpeed = 1;
-        public static int InventorySpace = 12;
-        public static int Sneak = 1;
+        public static int InventorySpace = 16;
+        public static int PlayerSneak = 1;
 		
         static void Main(string[] args)
         {
@@ -65,7 +65,7 @@ namespace DungeonCrawler
                     Console.WriteLine(CHOICE02Y);
                     System.Threading.Thread.Sleep(MillisecondsTimeout);
                     Random RollDice = new Random();
-                    int dice = RollDice.Next(Sneak, 8);
+                    int dice = RollDice.Next(PlayerSneak, 8);
                     if (dice <= 4)
                     {
                         Console.WriteLine(STATCHKF);
@@ -75,7 +75,7 @@ namespace DungeonCrawler
                     } else
                     {
                         Console.WriteLine(STATCHKS);
-                        Sneak++;
+                        PlayerSneak++;
                         System.Threading.Thread.Sleep(MillisecondsTimeout);
                     }
                     break;
@@ -168,4 +168,23 @@ public class EnemyNPC
     {
         return NPCName + ", " + NPCHealth + " HP, " + NPCAttack + " Attack";
     }
+}
+
+public class PlayerItem
+{
+    public PlayerItem() {}
+    public PlayerItem(int id, string name, int attack, int defence, int slot)
+    {
+        ItemID = id;
+        ItemName = name;
+        ItemAttackValue = attack;
+        ItemDefenceValue = defence;
+        ItemWeight = slot;
+    }
+
+    public int ItemID { get; set; }
+    public string ItemName { get; set; }
+    public int ItemAttackValue { get; set; }
+    public int ItemDefenceValue { get; set; }
+    public int ItemWeight { get; set; }
 }

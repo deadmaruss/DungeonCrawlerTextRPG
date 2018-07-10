@@ -31,7 +31,7 @@ namespace DungeonCrawler
         public static string CHOICE01I = "You are unsure what to do so you leave the key laying there. Maybe later you could come back and pick it up if you need...";
 
         public static string CHOICE02Y = "You try to sneak up to it, and...";
-        public static string CHOICE02N = "You don't want to fight so you try to come up with a way to get past it";
+        public static string CHOICE02N = "You don't want to fight so you sneak past it";
         public static string CHOICE02I = "While you are standing there thinking it noticed you and you won't get away without a fight anymore";
 
         public static string BATTLE01;

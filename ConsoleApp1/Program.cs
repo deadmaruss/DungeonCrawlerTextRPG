@@ -9,22 +9,21 @@ namespace DungeonCrawler
 {
     class Program
     {
+		public static int MillisecondsTimeout = 2000;
+
+        public static int PlayerHealth = 100;
+        public static int PlayerAttack = 5;
+        public static int PlayerSpeed = 1;
+        public static int InventorySpace = 12;
+        public static int Sneak = 1;
+		
         static void Main(string[] args)
         {
-            int MillisecondsTimeout = 2000;
-
-            int PlayerHealth = 100;
-            int PlayerAttack = 5;
-            int InventorySpace = 12;
-            int Sneak = 1;
-            Random rnd = new Random();
-
             Console.WriteLine(PRISON01);
             System.Threading.Thread.Sleep(MillisecondsTimeout);
             Console.WriteLine(PRISON02);
             System.Threading.Thread.Sleep(MillisecondsTimeout);
             Console.WriteLine(PRISON03);
-            System.Threading.Thread.Sleep(MillisecondsTimeout);
             string PlayerChoice01 = Console.ReadLine();
             bool HavePrisonKey = false;
             switch (PlayerChoice01)
@@ -51,56 +50,28 @@ namespace DungeonCrawler
             Console.WriteLine(PRISON06);
             System.Threading.Thread.Sleep(MillisecondsTimeout);
             Console.WriteLine(PRISON07);
-            System.Threading.Thread.Sleep(MillisecondsTimeout);
+            EnemyNPC goblin1 = new EnemyNPC
+            {
+                NPCID = 001,
+                NPCName = "Goblin Thug",
+                NPCHealth = 10,
+                NPCAttack = 10,
+                NPCSpeed = 2
+            };
             string PlayerChoice02 = Console.ReadLine();
             switch (PlayerChoice02)
             {
                 case "y":
                     Console.WriteLine(CHOICE02Y);
                     System.Threading.Thread.Sleep(MillisecondsTimeout);
-                    int dice = rnd.Next(Sneak, 8);
+                    Random RollDice = new Random();
+                    int dice = RollDice.Next(Sneak, 8);
                     if (dice <= 4)
                     {
                         Console.WriteLine(STATCHKF);
                         System.Threading.Thread.Sleep(MillisecondsTimeout);
-                        EnemyNPC goblin1 = new EnemyNPC
-                        {
-                            NPCID = 001,
-                            NPCName = "Goblin Thug",
-                            NPCHealth = 10,
-                            NPCAttack = 10
-                        };
                         Console.WriteLine(goblin1.Encounter());
-                        while (goblin1.NPCHealth > 0 && PlayerHealth > 0)
-                        {
-                            int Attack = rnd.Next(0, 5);
-                            if (Attack > 3)
-                            {
-                                goblin1.NPCHealth = goblin1.NPCHealth - PlayerAttack;
-                                Console.WriteLine("You hit");
-                                Console.WriteLine(ENEMYHP + goblin1.NPCHealth);
-                                Console.WriteLine(PLAYERHP + PlayerHealth);
-                            }
-                            else
-                            {
-                                PlayerHealth = PlayerHealth - goblin1.NPCAttack;
-                                Console.WriteLine(goblin1.NPCName + " hits");
-                                Console.WriteLine(PLAYERHP + PlayerHealth);
-                                Console.WriteLine(ENEMYHP + goblin1.NPCHealth);
-                            }
-                            System.Threading.Thread.Sleep(MillisecondsTimeout);
-
-                        }
-                        if (goblin1.NPCHealth == 0)
-                        {
-                            Console.WriteLine(VICTORY);
-                            System.Threading.Thread.Sleep(MillisecondsTimeout);
-                        }
-                        else
-                        {
-                            Console.WriteLine(DEFEAT);
-                            System.Threading.Thread.Sleep(MillisecondsTimeout);
-                        }
+                        BattleSim(goblin1.NPCName, goblin1.NPCSpeed, goblin1.NPCHealth, goblin1.NPCAttack);
                     } else
                     {
                         Console.WriteLine(STATCHKS);
@@ -115,6 +86,8 @@ namespace DungeonCrawler
                 default:
                     Console.WriteLine(CHOICE02I);
                     System.Threading.Thread.Sleep(MillisecondsTimeout);
+                    Console.WriteLine(goblin1.Encounter());
+                    BattleSim(goblin1.NPCName, goblin1.NPCSpeed, goblin1.NPCHealth, goblin1.NPCAttack);
                     break;
             }
             Console.WriteLine(PRISON08);
@@ -133,24 +106,63 @@ namespace DungeonCrawler
                 Console.WriteLine(FIELD01);
             }
         }
+		
+		public static void BattleSim(string EnemyName, int EnemySpeed, int EnemyHP, int EnemyAttack)
+        {
+            int AttackProb = PlayerSpeed - EnemySpeed;
+            while (EnemyHP > 0 && PlayerHealth > 0)
+            {
+                Random rnd = new Random();
+                int Attack = rnd.Next(AttackProb, 10);
+                if (Attack > 4)
+                {
+                    EnemyHP = EnemyHP - PlayerAttack;
+                    Console.WriteLine("You hit");
+                    Console.WriteLine(ENEMYHP + EnemyHP);
+                    Console.WriteLine(PLAYERHP + PlayerHealth);
+					System.Threading.Thread.Sleep(MillisecondsTimeout);
+                }
+                else
+                {
+                    PlayerHealth = PlayerHealth - EnemyAttack;
+                    Console.WriteLine(EnemyName + " hits");
+                    Console.WriteLine(PLAYERHP + PlayerHealth);
+                    Console.WriteLine(ENEMYHP + EnemyHP);
+					System.Threading.Thread.Sleep(MillisecondsTimeout);
+                }
+
+            }
+            if (EnemyHP == 0)
+            {
+                Console.WriteLine(VICTORY);
+				System.Threading.Thread.Sleep(MillisecondsTimeout);
+            }
+            else
+            {
+                Console.WriteLine(DEFEAT);
+				System.Threading.Thread.Sleep(MillisecondsTimeout);
+            }
+        }
     }
 }
 
 public class EnemyNPC
 {
     public EnemyNPC() { }
-    public EnemyNPC(int id, string name, int hp, int attack)
+    public EnemyNPC(int id, string name, int hp, int attack, int speed)
     {
         NPCID = id;
         NPCName = name;
         NPCHealth = hp;
         NPCAttack = attack;
+        NPCSpeed = speed;
     }
 
     public int NPCID { get; set;  }
     public string NPCName { get; set; }
     public int NPCHealth { get; set; }
     public int NPCAttack { get; set; }
+    public int NPCSpeed { get; set; }
 
     public string Encounter()
     {
